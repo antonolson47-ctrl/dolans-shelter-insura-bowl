@@ -311,7 +311,7 @@ function buildOverlay(snap) {
     return;
   }
   if (snap.phase === "fg" && snap.fg) {
-    const zone = snap.fg.pat ? 34 : Math.max(12, 28 - Math.max(0, snap.fg.dist - 30) * 0.4);
+    const zone = Math.round(((snap.fg.window || 0.18) * 2) * 100);
     ov.innerHTML = `<div class="sheet"><div class="sheet-head">${snap.fg.pat ? "EXTRA POINT" : "FIELD GOAL " + snap.fg.dist}</div>
       <div class="meter"><div class="zone" style="left:${50 - zone / 2}%;width:${zone}%"></div><div class="needle" id="needle"></div></div>
       <button class="btn" data-act="lock" type="button">A — KICK</button></div>`;

@@ -162,6 +162,10 @@ export class Game {
     return `${names[this.down] || "1ST"} & ${tg >= ytg ? "GOAL" : tg}`;
   }
 
+  attackDir(team) {
+    return team === "player" ? 1 : -1;
+  }
+
   fgDistance() {
     const snap = this.los - this.dir * 7;
     const posts = this.dir === 1 ? 110 : -10;
@@ -464,7 +468,13 @@ export class Game {
   tickFG(dt) {
     if (!this.fg || this.fg.resolved) return;
     this.fg.t += dt;
-    const period = clamp(1.5 - this.fg.dist / 90, 0.62, 1.5);
+    const period = this.fg.pat
+      ? 2.85
+      : clamp(2.7 - Math.max(0, this.fg.dist - 32) * 0.016, 1.9, 2.7);
+    this.fg.period = period;
+    this.fg.window = this.fg.pat
+      ? 0.2
+      : clamp(0.2 - Math.max(0, this.fg.dist - 34) * 0.0022, 0.11, 0.2);
     this.fg.meter = 0.5 + 0.5 * Math.sin((this.fg.t * Math.PI * 2) / period);
     if ((this.fg.team === "cpu" || this.bot) && this.fg.t > 0.5) this.lockKick();
   }
@@ -480,7 +490,7 @@ export class Game {
       good = this.rand() < clamp(chance, 0.3, 0.98);
     } else {
       const err = Math.abs(this.fg.meter - 0.5);
-      const window = clamp(0.2 - Math.max(0, this.fg.dist - 28) * 0.003, 0.065, 0.22);
+      const window = this.fg.window ?? 0.18;
       good = err <= window;
     }
     this.resolveFG(good);
@@ -904,6 +914,31 @@ export class Game {
       if (ball.mode === "loose") {
         this.desire(p, ball.x, ball.y, p.speed * 1.05);
         continue;
+      }
+      if (this.play && (this.play.kind === "kickoff" || this.play.kind === "punt")) {
+        const returning = this.play.returnTeam || other(this.play.offense);
+        const goalDir = this.attackDir(returning);
+        if (ball.mode === "air" && ball.kick) {
+          if (p.role === "RET" || (p.team === returning && p.role !== "GUN")) {
+            if (p.role === "RET") this.desire(p, ball.toX, ball.toY, p.speed);
+            else this.desire(p, ball.toX + goalDir * 8, p.y, p.speed * 0.95);
+          } else {
+            this.desire(p, ball.toX, p.y, p.speed * (p.role === "GUN" ? 0.92 : 0.82));
+          }
+          continue;
+        }
+        if (carrier) {
+          if (p.hasBall) {
+            if (p.team !== "player") this.cpuCarrier(p);
+            else this.idleCarrier(p);
+          } else if (p.team === carrier.team) {
+            const lane = p.y <= carrier.y ? Math.max(3, carrier.y - 5) : Math.min(27, carrier.y + 5);
+            this.desire(p, carrier.x + this.attackDir(p.team) * 6, lane, p.speed);
+          } else {
+            this.chase(p, carrier);
+          }
+          continue;
+        }
       }
       if (ball.mode === "air" && ball.kick) {
         if (p.role === "RET") this.desire(p, ball.toX, ball.toY, p.speed);
