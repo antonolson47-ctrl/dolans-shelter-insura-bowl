@@ -74,6 +74,61 @@ for (const receive of [true, false]) {
   assert(sawCatch || g.reasons.touchback, "kickoff ended without a catch or touchback");
 }
 
+for (const receive of [true, false]) {
+  const g = new Game({
+    player: TEAMS.cyclodes,
+    cpu: TEAMS.giants,
+    bot: false,
+    seed: receive ? 5 : 15,
+    receive,
+  });
+  g.start(receive);
+  let n = 0;
+  while (g.phase !== "live" && n < 40) {
+    if (g.phase === "celebrate" || g.phase === "quarter" || g.phase === "halftime") g.advance();
+    else g.update(1 / 50, stickRight());
+    n += 1;
+  }
+  if (g.ball && g.ball.touchback) {
+    g.ball.touchback = false;
+    g.ball.toX = receive ? 24 : 76;
+  }
+  let guard = 0;
+  while (g.phase === "live" && g.play && !g.play.caught && guard < 400) {
+    g.update(1 / 50, stickRight());
+    guard += 1;
+  }
+  assert(g.play && g.play.caught, `return never caught receive=${receive}`);
+  const dir = g.attackDir(g.play.returnTeam);
+  let forward = 0;
+  let steps = 0;
+  for (let i = 0; i < 25 && g.phase === "live"; i++) {
+    g.update(1 / 40, { ax: dir, ay: 0, aEdge: false, bEdge: false, aDown: false, bDown: false });
+    for (const mate of g.players) {
+      if (mate.team !== g.play.returnTeam || mate.hasBall) continue;
+      forward += mate.vx * dir;
+      steps += 1;
+    }
+  }
+  assert(steps > 0, "no return teammates");
+  assert(forward / steps > 1.5, `teammates ran the wrong way receive=${receive} avg ${forward / steps}`);
+}
+
+{
+  const g = new Game({ player: TEAMS.cyclodes, cpu: TEAMS.giants, bot: false, seed: 2, receive: true });
+  g.offense = "player";
+  g.dir = 1;
+  g.los = 75;
+  g.beginFG({ pat: true, team: "player" });
+  g.tickFG(0.2);
+  assert(g.fg.period >= 2.5, `extra point meter still too fast (${g.fg.period})`);
+  assert(g.fg.meter < 0.85, `needle jumped too far in 0.2s (${g.fg.meter})`);
+  g.los = 40;
+  g.beginFG({ pat: false, team: "player" });
+  g.tickFG(0.05);
+  assert(g.fg.period >= 1.9, `field goal meter still too fast (${g.fg.period})`);
+}
+
 const scores = [];
 let failed = 0;
 let tds = 0;

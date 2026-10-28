@@ -31,7 +31,7 @@ Share these:
 - [Insura-Bowl trophy](art/insura-bowl-trophy.jpg)
 - [Rivalry trophies](art/rivalry-trophies.jpg)
 
-Logos, helmets, and the team-select mock live in `art/` too. The design bible is `DESIGN.md`. The on-screen pixel font is Press Start 2P (SIL Open Font License).
+Logos, helmets, and the team-select mock live in `art/` too. The design bible is `DESIGN.md`. UI type is Russo One and Barlow (SIL Open Font License), self-hosted. The title cover is `art/cover.jpg`.
 
 ## Run it locally
 
