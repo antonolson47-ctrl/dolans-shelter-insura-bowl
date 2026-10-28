@@ -44,6 +44,18 @@ function show(id) {
 
 function unlock() { audio.unlock(); }
 
+function quitToTitle() {
+  paused = false;
+  selectedPlay = null;
+  builtPhase = "";
+  game = null;
+  const ov = $("overlay");
+  if (ov) ov.innerHTML = "";
+  try { voice.stop(); } catch { /* already quiet */ }
+  show("title");
+  audio.startMusic("title");
+}
+
 let toastTimer = 0;
 
 voice.toast = (text) => showToast(text);
@@ -365,7 +377,9 @@ function frame(now) {
     if (field) field.draw(snap);
     syncHud(snap);
     syncCue(snap);
-    if (paused || snap.phase !== builtPhase) buildOverlay(snap);
+    if (paused) {
+      if (builtPhase !== "paused") buildOverlay(snap);
+    } else if (snap.phase !== builtPhase) buildOverlay(snap);
     if (snap.phase === "fg") {
       const needle = $("needle");
       if (needle && snap.fg) needle.style.left = `${snap.fg.meter * 100}%`;
@@ -582,22 +596,29 @@ function wire() {
   $("startGame").addEventListener("click", startMatch);
   $("pauseBtn").addEventListener("click", () => { paused = !paused; builtPhase = ""; });
   $("muteGame").addEventListener("click", () => { unlock(); setMute(!audio.muted); });
-  $("overlay").addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-act]");
-    if (!btn || !game) return;
-    unlock();
-    const act = btn.dataset.act;
-    const arg = btn.dataset.arg;
-    if (act === "play") { selectedPlay = arg; builtPhase = ""; }
-    else if (act === "hike") { game.hike(selectedPlay); selectedPlay = null; builtPhase = ""; }
-    else if (act === "timeout") game.timeout("player");
-    else if (act === "pat") game.choosePat(arg);
-    else if (act === "lock") game.lockKick();
-    else if (act === "skip") game.advance();
-    else if (act === "resume") { paused = false; builtPhase = ""; }
-    else if (act === "mute") { setMute(!audio.muted); builtPhase = ""; }
-    else if (act === "quit") { paused = false; game = null; voice.stop?.(); show("title"); audio.startMusic("title"); }
-  });
+  let lastOverlayAct = 0;
+function onOverlayAct(e) {
+  const btn = e.target.closest("[data-act]");
+  if (!btn || !game) return;
+  const now = performance.now();
+  if (now - lastOverlayAct < 350) return;
+  lastOverlayAct = now;
+  if (e.cancelable) e.preventDefault();
+  unlock();
+  const act = btn.dataset.act;
+  const arg = btn.dataset.arg;
+  if (act === "play") { selectedPlay = arg; builtPhase = ""; }
+  else if (act === "hike") { game.hike(selectedPlay); selectedPlay = null; builtPhase = ""; }
+  else if (act === "timeout") game.timeout("player");
+  else if (act === "pat") game.choosePat(arg);
+  else if (act === "lock") game.lockKick();
+  else if (act === "skip") game.advance();
+  else if (act === "resume") { paused = false; builtPhase = ""; }
+  else if (act === "mute") { setMute(!audio.muted); builtPhase = ""; }
+  else if (act === "quit") quitToTitle();
+}
+$("overlay").addEventListener("pointerup", onOverlayAct);
+$("overlay").addEventListener("click", onOverlayAct);
   $("liftBtn").addEventListener("click", openTrophy);
   $("finalNext").addEventListener("click", () => {
     if (pendingTrophy && !$("liftBtn").classList.contains("hidden")) {

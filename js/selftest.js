@@ -34,6 +34,46 @@ for (let i = 0; i < BANKS.td.length; i++) {
 }
 assert(repeats === 0, `td lines repeated early (${repeats})`);
 
+function stickRight() {
+  return { ax: 1, ay: 0, aEdge: false, bEdge: false, aDown: false, bDown: false };
+}
+function screenBall(g) {
+  return g.visualFlip() ? 100 - g.ball.x : g.ball.x;
+}
+for (const receive of [true, false]) {
+  const g = new Game({
+    player: TEAMS.cyclodes,
+    cpu: TEAMS.giants,
+    bot: false,
+    seed: receive ? 4 : 12,
+    receive,
+  });
+  g.start(receive);
+  let n = 0;
+  while (g.phase !== "live" && n < 40) {
+    if (g.phase === "celebrate" || g.phase === "quarter" || g.phase === "halftime") g.advance();
+    else g.update(1 / 50, stickRight());
+    n += 1;
+  }
+  assert(g.play && g.play.kind === "kickoff", "kickoff did not start");
+  const flips = new Set();
+  let prev = screenBall(g);
+  let maxJump = 0;
+  let sawCatch = false;
+  for (let i = 0; i < 500 && g.phase === "live"; i++) {
+    flips.add(g.visualFlip());
+    g.update(1 / 50, stickRight());
+    if (g.phase !== "live") break;
+    const sx = screenBall(g);
+    maxJump = Math.max(maxJump, Math.abs(sx - prev));
+    prev = sx;
+    if (g.play && g.play.caught) sawCatch = true;
+  }
+  assert(flips.size === 1, `kickoff view flipped mid-return (receive=${receive})`);
+  assert(maxJump < 20, `kickoff camera jumped ${maxJump.toFixed(1)} yards`);
+  assert(sawCatch || g.reasons.touchback, "kickoff ended without a catch or touchback");
+}
+
 const scores = [];
 let failed = 0;
 let tds = 0;
