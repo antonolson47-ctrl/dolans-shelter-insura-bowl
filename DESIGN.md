@@ -89,6 +89,23 @@ Art: art/insura-bowl-trophy.jpg, art/rivalry-trophies.jpg
 - **G-Cup** — Gilbert Tigers rivalry game.
 Winning a rivalry game or the final triggers a trophy-lift cutscene plus an announcer call (e.g., Pat: "BOOM! That umbrella's paid in full!").
 
+### Commentary rules
+1. **Iterate / rotate — no stale repeats.** Lines come from a large bank tagged by situation (TD, sack, INT, missed FG, 3-and-out, blowout, comeback, big bomb, crunch). Pick by situation weight; a line can't repeat until most of its bucket has been used, with per-game and per-season cooldowns. Keep growing the bank.
+2. **Football internet humor energy.** Roast culture, meme-style gags (Dez-nuts-style setup/punchline bits), Madden BOOM, South Park deadpan. Keep the insurance gags and the mock-on-poor-play rule. Keep it parody: no real trademarked catchphrases, no real insurer slogans.
+3. **Funny beats bland.** The wit and humor are what keep the game replayable. When in doubt, cut the generic play-by-play and use the joke.
+
+### Football-meme flavored samples
+- Kenny: "Hey, you know who's covering that receiver?" Pat: "Who?" Kenny: "DEDUCTIBLE NUTS! Nobody, dude. Nobody's covering him."
+- Pat: "That's not a catch, that's a process. And your process just got audited. BOOM!"
+- Kenny: "Your defense just got Mossed so hard the adjuster's filing it under 'act of God.'"
+- Pat: "He's the GOAT! ...the Greatest Of All Turnovers."
+- Kenny: "Butt fumble energy, dude. Totally preexisting condition."
+- Pat: "That quarterback looks like he just saw his premium renewal notice."
+- Kenny: "Bro played that coverage like a Madden player who forgot to switch defenders."
+- Pat: "They're gonna put that pick on the 'Not Top 10' and the underwriter's gonna raise your rates."
+- Kenny: "Ref, check the tape. Claim denied. Still bad."
+- Pat: "Run the dang ball! You're not getting paid by the incompletion!"
+
 ## Audio list
 Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch, TD fanfare, crunch tackle, pick-six sting, Hail Claim choir, field goal, fumble, halftime, playoff & Insura-Bowl themes, announcer one-liners.
 
