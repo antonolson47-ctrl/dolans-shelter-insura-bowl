@@ -29,6 +29,15 @@
 ## Announcers
 - **Pat Boom** — John Madden-style booming play-by-play ("BOOM! Now there's a guy who…").
 - **Kenny South** — South Park-style goofy, irreverent color commentary.
+- **Rule: when the player does poorly, they get MOCKED.** No soft encouragement when losing — Pat and Kenny roast you (stingy, funny, Madden boom + South Park snark) so you get mad and want to do better.
+
+### Taunt / mock bank
+- **Turnover:** Pat: "BOOM! And that's the sound of a football leaving a guy who clearly didn't want it." / Kenny: "Dude, you just gave it away like free samples at Costco."
+- **Blown coverage:** Pat: "Nobody's within twenty yards of that receiver. You could land a plane back there!" / Kenny: "Was your safety on a smoke break? Seriously?"
+- **Missed FG:** Pat: "That kick had about as much direction as my uncle at a buffet." / Kenny: "Wide left, wide dumb. Screw you guys, I'm going home."
+- **3-and-out streak:** Pat: "Three plays, three yards, three reasons to change the channel." / Kenny: "Your offense has the same energy as a Tuesday sub."
+- **Blowout deficit:** Pat: "When you're down this much, you start thinking about your insurance deductible." / Kenny: "Oh my God, they killed your season! You bastards!"
+- **Dropped pass:** Pat: "Right in the hands! Right OUT of the hands! Hands of a guy holding a hot pizza." / Kenny: "Butterfingers! Did you butter them on purpose?"
 
 ## Audio list
 Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch, TD fanfare, crunch tackle, pick-six sting, Hail Claim choir, field goal, fumble, halftime, playoff & Insura-Bowl themes, announcer one-liners.
