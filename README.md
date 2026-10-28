@@ -1,6 +1,6 @@
 # Dolan's Shelter Insura-Bowl 🏈
 
-A Tecmo Bowl–style, pixel-art arcade football game built for the **phone browser**. Pick the Iowa State Cyclodes, the New York Gi-ants, or the Lowell Shelter Dogs, battle through an 8-game season, 2 playoff games, and the Insura-Bowl — with huge plays, bone-crunching hits, and announcers who never shut up.
+A Tecmo Bowl–style, pixel-art arcade football game built for the **phone browser**. Pick the Iowa State Cyclodes, the New York Gi-ants, or the Gilbert Tigers, battle through an 8-game season, 2 playoff games, and the Insura-Bowl — with huge plays, bone-crunching hits, and announcers who never shut up.
 
 ## Controls (target)
 Phone browser, touch-first: on-screen D-pad + A (pass/dive) / B (switch/juke) buttons. Portrait team select, landscape gameplay.

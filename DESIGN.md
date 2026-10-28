@@ -10,12 +10,12 @@
 |---|---|---|---|
 | Iowa State Cyclodes | Cardinal & yellow | Tornado | 7 |
 | New York Gi-ants | Royal blue & white | Insect ant | 11 |
-| Lowell Shelter Dogs (local invent team) | Green & silver | Dog with CLAIM tag | 47 |
+| Gilbert Tigers (local invent team) | Reddish crimson, black & silver | Reddish tiger with large "G" (Georgia-style parody) | 9 |
 
 ## Opponents (fictional)
 - **Big 12–style conference** for the Cyclodes schedule (parody college programs).
 - **NFC East–style division** for the Gi-ants schedule (parody pro teams: Dallas, Philly, Washington analogs).
-- Shelter Dogs also appear in opponent lists.
+- Gilbert Tigers also appear in opponent lists.
 
 ## Season format
 8-game regular season → 2 playoff games → **Insura-Bowl** championship.
@@ -35,4 +35,4 @@ Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch
 
 ## Storyboard beats (see art/storyboard-moments.jpg)
 1. Kickoff  2. Bomb TD  3. Crunch tackle  4. Pick-six  
-Team select mock: art/team-select.jpg
+Team select mock: art/team-select.jpg (shows old placeholder local team; Gilbert Tigers art pending: art/gilbert-tigers-logo.jpg, art/gilbert-tigers-helmet.jpg)
