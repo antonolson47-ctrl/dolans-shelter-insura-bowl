@@ -169,6 +169,13 @@ export class Game {
   }
 
   visualFlip() {
+    // Kickoff and punt keep the return team's attacking direction for the
+    // whole play. Flipping when the returner catches the ball reversed the view.
+    if (this.play && (this.play.kind === "kickoff" || this.play.kind === "punt")
+      && (this.phase === "live" || this.phase === "celebrate")) {
+      const returning = this.play.returnTeam || other(this.play.offense);
+      return returning === "cpu";
+    }
     const carrier = this.ball && this.ball.carrier;
     if (this.phase === "live" && this.ball && this.ball.mode === "air" && this.play) {
       return this.play.offense === "cpu";
@@ -573,7 +580,7 @@ export class Game {
     this.clockRunning = false;
     this.clockAtSnap = this.clock;
     this.play = {
-      kind: "kickoff", name: "KICKOFF", offense: kick, dir: this.dir,
+      kind: "kickoff", name: "KICKOFF", offense: kick, returnTeam: recv, dir: this.dir,
       los: this.los, chains: this.chains, thrown: false, handed: false,
       twoPt: false, caught: false, bomb: false, picked: false, airDist: 0,
       fumbleBy: null, turnoverLive: false,
@@ -607,7 +614,7 @@ export class Game {
     this.clockRunning = false;
     this.clockAtSnap = this.clock;
     this.play = {
-      kind: "punt", name: "PUNT", offense: kicking, dir, los: this.los, chains: this.chains,
+      kind: "punt", name: "PUNT", offense: kicking, returnTeam: recv, dir, los: this.los, chains: this.chains,
       thrown: false, handed: false, twoPt: false, caught: false, bomb: false, picked: false,
       airDist: Math.abs(land - fromX), fumbleBy: null, turnoverLive: false, three,
     };

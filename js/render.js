@@ -293,7 +293,7 @@ export class FieldView {
     let guys = [...(snap.players || [])];
     if (snap.phase === "playcall" && guys.length === 0) guys = this.preview(snap);
     guys.sort((a, b) => a.y - b.y);
-    for (const p of guys) this.player(ctx, project, p, snap.phase === "live");
+    for (const p of guys) this.player(ctx, project, p, snap.phase === "live", flip);
     if (snap.ball && snap.ball.mode !== "dead") this.ball(ctx, project, snap.ball);
 
     ctx.restore();
@@ -361,7 +361,7 @@ export class FieldView {
     })));
   }
 
-  player(ctx, project, p, animate) {
+  player(ctx, project, p, animate, flip) {
     const [sx0, sy0] = project(p.x, p.y);
     const sx = Math.round(sx0);
     const sy = Math.round(sy0);
@@ -378,7 +378,9 @@ export class FieldView {
       ctx.fillRect(sx - 2, sy - 46, 4, 6);
       ctx.fillRect(sx - 5, sy - 40, 10, 3);
     }
-    const mirror = (p.facing || 1) < 0;
+    const worldFacing = p.facing || 1;
+    const screenFacing = flip ? -worldFacing : worldFacing;
+    const mirror = screenFacing < 0;
     const pal = {
       O: "#070707",
       H: p.helmet || p.primary,
