@@ -35,4 +35,5 @@ Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch
 
 ## Storyboard beats (see art/storyboard-moments.jpg)
 1. Kickoff  2. Bomb TD  3. Crunch tackle  4. Pick-six  
-Team select mock: art/team-select.jpg (shows old placeholder local team; Gilbert Tigers art pending: art/gilbert-tigers-logo.jpg, art/gilbert-tigers-helmet.jpg)
+Team select mock: art/team-select.jpg
+Gilbert Tigers art: art/gilbert-tigers-logo.jpg, art/gilbert-tigers-helmet.jpg
