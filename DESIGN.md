@@ -80,6 +80,15 @@
 - Pat: "That team is fully insured — every rider, every add-on, BOOM!"
 - Kenny: "Shelter's got you covered, and you're covering the spread, sweet!"
 
+## Trophies
+Art: art/insura-bowl-trophy.jpg, art/rivalry-trophies.jpg
+- **Insura-Bowl Umbrella** — championship trophy for winning the Insura-Bowl final.
+- **Claim Clipboard Cup** — Cyclodes vs Okie State rivalry.
+- **Deductible Drum** — Gi-ants vs Philly Beagles rivalry.
+- **Tornado–Ant Bell** — Cyclodes vs Gi-ants crossover rivalry.
+- **G-Cup** — Gilbert Tigers rivalry game.
+Winning a rivalry game or the final triggers a trophy-lift cutscene plus an announcer call (e.g., Pat: "BOOM! That umbrella's paid in full!").
+
 ## Audio list
 Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch, TD fanfare, crunch tackle, pick-six sting, Hail Claim choir, field goal, fumble, halftime, playoff & Insura-Bowl themes, announcer one-liners.
 
