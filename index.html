@@ -1,3 +1,167 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dolan's Shelter Insura-Bowl</title>
-<style>body{background:#111;color:#fff;font-family:monospace;text-align:center;padding:20px}img{max-width:100%;border:3px solid #ffd200}</style></head>
-<body><h1>Dolan's Shelter Insura-Bowl — coming soon</h1><img src="art/logos.jpg" alt="Cyclodes and Gi-ants logos"><p>Also playable: Gilbert Tigers</p><img src="art/gilbert-tigers-logo.jpg" alt="Gilbert Tigers logo"></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#070b14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="description" content="Dolan's Shelter Insura-Bowl — a Tecmo Bowl-style arcade football game. Cyclodes, Gi-ants, and Gilbert Tigers.">
+  <meta property="og:title" content="Dolan's Shelter Insura-Bowl">
+  <meta property="og:description" content="Pick the Cyclodes, Gi-ants, or Gilbert Tigers. Throw bombs. Get roasted by Pat Boom and Kenny South.">
+  <meta property="og:image" content="https://antonolson47-ctrl.github.io/dolans-shelter-insura-bowl/art/cover.jpg">
+  <title>Dolan's Shelter Insura-Bowl</title>
+  <link rel="icon" href="art/crest.jpg">
+  <link rel="apple-touch-icon" href="art/crest.jpg">
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+  <div id="app">
+    <section id="title" class="screen on">
+      <div class="title-wrap">
+        <div class="title-shade">
+          <img class="crest" src="art/crest.jpg" alt="Dolan's Shelter Insura-Bowl crest">
+          <div class="title-actions">
+            <button class="btn" id="goPlay" type="button">PLAY</button>
+            <button class="btn alt" id="goHow" type="button">HOW TO PLAY</button>
+            <button class="btn ghost" id="muteTitle" type="button">SOUND ON</button>
+          </div>
+          <p class="fine">Tecmo-style arcade football · phone browser</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="screen menu">
+      <div class="panel help">
+        <p class="kicker">DOLAN'S SHELTER</p>
+        <h2>HOW TO PLAY</h2>
+        <p>Exhibition is one game. Season is 8 games, then a playoff and the Insura-Bowl if you win 4 or more.</p>
+        <p>Call a play, then hike. On offense the D-pad moves the ball carrier. <b>A</b> throws to the highlighted receiver, or dives and stiff-arms once you're running. <b>B</b> cycles receivers, then jukes. On defense, <b>A</b> dives and <b>B</b> switches to the nearest tackler.</p>
+        <p>Field goals are a timing bar. Tap <b>A</b> when the needle is in the green. Short quarters, lots of points. Bombs, crunches, pick-sixes, and a last-second Hail Claim all get a banner.</p>
+        <p>Pat Boom and Kenny South will roast you if you throw picks, miss kicks, or get blown out. Win a rivalry or the Insura-Bowl and you lift the trophy.</p>
+        <p>Desktop: arrows or WASD move, Z is A, X is B, Enter hikes. Keys 1–6 pick a play.</p>
+        <button class="btn" id="howBack" type="button">BACK</button>
+      </div>
+    </section>
+
+    <section id="mode" class="screen menu">
+      <div class="panel">
+        <p class="kicker">DOLAN'S SHELTER INSURA-BOWL</p>
+        <h2 class="pixel-title" style="text-align:center;font-size:16px;color:var(--gold)">PICK A MODE</h2>
+        <button class="btn" id="modeEx" type="button">EXHIBITION</button>
+        <button class="btn" id="modeSeason" type="button">SEASON</button>
+        <button class="btn alt hidden" id="modeContinue" type="button">CONTINUE SEASON</button>
+        <button class="btn ghost" id="modeBack" type="button">BACK</button>
+      </div>
+    </section>
+
+    <section id="team" class="screen menu">
+      <div class="panel">
+        <p class="kicker">1 PLAYER</p>
+        <h2 class="pixel-title" style="text-align:center;font-size:18px;color:var(--gold)">PICK YOUR TEAM</h2>
+        <div id="teamList" class="list"></div>
+        <button class="btn ghost" id="teamBack" type="button">BACK</button>
+      </div>
+    </section>
+
+    <section id="opp" class="screen menu">
+      <div class="panel">
+        <p class="kicker">EXHIBITION</p>
+        <h2 class="pixel-title" style="text-align:center;font-size:16px;color:var(--gold)">PICK OPPONENT</h2>
+        <div id="oppList" class="list"></div>
+        <button class="btn ghost" id="oppBack" type="button">BACK</button>
+      </div>
+    </section>
+
+    <section id="hub" class="screen menu">
+      <div class="panel">
+        <p class="kicker" id="hubKicker">SEASON</p>
+        <h2 id="hubTeam" style="text-align:center"></h2>
+        <p class="lede" id="hubRecord"></p>
+        <p class="lede" id="hubNext"></p>
+        <button class="btn" id="hubPlay" type="button">KICKOFF</button>
+        <div id="hubSchedule" class="schedule"></div>
+        <button class="btn ghost" id="hubQuit" type="button">QUIT SEASON</button>
+      </div>
+    </section>
+
+    <section id="pregame" class="screen menu">
+      <div class="panel">
+        <p class="kicker" id="preLabel">EXHIBITION</p>
+        <h2 id="preMatch" style="text-align:center;font-size:18px"></h2>
+        <p class="lede" id="preNote"></p>
+        <div class="btn-row">
+          <button class="btn" id="recvBtn" type="button">RECEIVE</button>
+          <button class="btn alt" id="kickBtn" type="button">KICK</button>
+        </div>
+        <button class="btn" id="startGame" type="button">HIKE IT OFF</button>
+        <button class="btn ghost" id="preBack" type="button">BACK</button>
+      </div>
+    </section>
+
+    <section id="game" class="screen game-screen">
+      <header id="scorebug">
+        <div class="bug-team" id="bugHome">
+          <span class="poss" id="possHome"></span>
+          <span class="abbr" id="homeAbbr">CYC</span>
+          <span class="bug-score" id="homeScore">0</span>
+        </div>
+        <div class="bug-mid">
+          <div id="bugClock">Q1 3:00</div>
+          <div id="bugDown">1ST &amp; 10</div>
+          <div id="bugSpot">OWN 25</div>
+        </div>
+        <div class="bug-team" id="bugAway">
+          <span class="bug-score" id="awayScore">0</span>
+          <span class="abbr" id="awayAbbr">GIA</span>
+          <span class="poss" id="possAway"></span>
+        </div>
+      </header>
+      <div id="stage">
+        <button class="icon-btn" id="pauseBtn" type="button">II</button>
+        <canvas id="field" width="400" height="225"></canvas>
+        <div id="banner" class="hidden"></div>
+        <div id="subbanner" class="hidden"></div>
+        <div id="note"></div>
+        <div id="bubbles">
+          <div id="pat" class="bubble hidden"><b>PAT BOOM</b><span></span></div>
+          <div id="kenny" class="bubble hidden"><b>KENNY SOUTH</b><span></span></div>
+        </div>
+        <div id="overlay"></div>
+      </div>
+      <footer id="controls">
+        <div id="stick" aria-label="Move"><div id="knob"></div></div>
+        <div id="ab">
+          <button class="pad" id="btnB" type="button"><b>B</b><span id="bLabel">JUKE</span></button>
+          <button class="pad" id="btnA" type="button"><b>A</b><span id="aLabel">THROW</span></button>
+        </div>
+      </footer>
+    </section>
+
+    <section id="final" class="screen menu">
+      <div class="panel">
+        <p class="kicker" id="finalKicker">FINAL</p>
+        <div class="final-score" id="finalScore">0 – 0</div>
+        <p class="lede" id="finalNote"></p>
+        <div id="finalStats"></div>
+        <div id="finalPat" class="bubble"><b>PAT BOOM</b><span></span></div>
+        <div id="finalKenny" class="bubble"><b>KENNY SOUTH</b><span></span></div>
+        <button class="btn hidden" id="liftBtn" type="button">LIFT THE TROPHY</button>
+        <button class="btn" id="finalNext" type="button">CONTINUE</button>
+        <button class="btn ghost" id="finalTitle" type="button">TITLE</button>
+      </div>
+    </section>
+
+    <section id="trophy" class="screen menu">
+      <div class="panel">
+        <p class="kicker">HARDWARE</p>
+        <img id="trophyImg" class="trophy-img" alt="Trophy">
+        <div class="caption" id="trophyCaption"></div>
+        <div id="trophyPat" class="bubble"><b>PAT BOOM</b><span></span></div>
+        <div id="trophyKenny" class="bubble"><b>KENNY SOUTH</b><span></span></div>
+        <button class="btn" id="trophyNext" type="button">CONTINUE</button>
+      </div>
+    </section>
+  </div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

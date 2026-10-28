@@ -113,3 +113,9 @@ Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch
 1. Kickoff  2. Bomb TD  3. Crunch tackle  4. Pick-six  
 Team select mock: art/team-select.jpg
 Gilbert Tigers art: art/gilbert-tigers-logo.jpg, art/gilbert-tigers-helmet.jpg
+
+## Playable build
+
+The game is a static site. GitHub Pages: https://antonolson47-ctrl.github.io/dolans-shelter-insura-bowl/
+
+Open `index.html` through a local server (`python3 -m http.server`). Phone: on-screen D-pad, **A** (throw / dive / kick), **B** (cycle receiver / juke / switch defender). Desktop: arrows or WASD, Z, X, Enter, keys 1–6. Exhibition is one game. Season is 8 games, a playoff, and the Insura-Bowl if you win at least 4. Quarters are 3:00. Rivalry wins and the Insura-Bowl open the trophy lift (`art/insura-bowl-trophy.jpg`, `art/rivalry-trophies.jpg`). Cover and crest for sharing: `art/cover.jpg`, `art/crest.jpg`.
