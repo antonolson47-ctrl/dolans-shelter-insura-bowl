@@ -1,5 +1,6 @@
 import { AudioBus } from "./audio.js";
 import { Commentator, bucketForCue } from "./commentary.js";
+import { AnnouncerVoice } from "./speech.js";
 import { FieldView } from "./render.js";
 import { Season } from "./season.js";
 import { Game } from "./sim.js";
@@ -9,6 +10,7 @@ import {
 } from "./teams.js";
 
 const audio = new AudioBus();
+const voice = new AnnouncerVoice();
 const commentator = new Commentator();
 const $ = (id) => document.getElementById(id);
 
@@ -29,7 +31,6 @@ let last = 0;
 let paused = false;
 let selectedPlay = null;
 let builtPhase = "";
-let bubbleUntil = 0;
 let finalHandled = false;
 let pendingTrophy = null;
 let afterTrophy = "hub";
@@ -43,10 +44,27 @@ function show(id) {
 
 function unlock() { audio.unlock(); }
 
+let toastTimer = 0;
+
+voice.toast = (text) => showToast(text);
+
+function showToast(text) {
+  const el = $("speechToast");
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add("hidden"), 3600);
+}
+
 function setMute(m) {
   audio.setMuted(m);
+  voice.setMuted(m);
   try { localStorage.setItem("insura-mute", m ? "1" : "0"); } catch { /* ignore */ }
   $("muteTitle").textContent = m ? "SOUND OFF" : "SOUND ON";
+  const gameMute = $("muteGame");
+  if (gameMute) gameMute.textContent = m ? "SOUND" : "MUTE";
+  if (m) showToast("Sound and commentary voice are muted.");
 }
 
 function teamCard(team) {
@@ -156,6 +174,7 @@ function paintReceive() {
 function startMatch() {
   unlock();
   commentator.resetGame();
+  voice.stop?.();
   finalHandled = false;
   pendingTrophy = null;
   paused = false;
@@ -185,16 +204,13 @@ function readInput() {
 
 function say(line) {
   if (!line) return;
-  $("pat").classList.remove("hidden");
-  $("kenny").classList.remove("hidden");
-  $("pat").querySelector("span").textContent = line.pat;
-  $("kenny").querySelector("span").textContent = line.kenny;
-  bubbleUntil = performance.now() + 7000;
-}
-
-function hideBubbles() {
-  $("pat").classList.add("hidden");
-  $("kenny").classList.add("hidden");
+  const pat = $("tickPat");
+  const kenny = $("tickKenny");
+  if (pat) pat.querySelector("span").textContent = line.pat;
+  if (kenny) kenny.querySelector("span").textContent = line.kenny;
+  voice.speak(line);
+  const secs = Math.min(8, 1.2 + (line.pat.length + line.kenny.length) * 0.045);
+  audio.duck(secs);
 }
 
 function ink(hex) {
@@ -240,7 +256,7 @@ function syncCue(snap) {
     const bucket = bucketForCue(snap.cue, snap.scores);
     say(commentator.line(bucket));
     game.cue = null;
-  } else if (performance.now() > bubbleUntil) hideBubbles();
+  }
 }
 
 function playButtons(plays, selected) {
@@ -250,7 +266,7 @@ function playButtons(plays, selected) {
 function buildOverlay(snap) {
   const ov = $("overlay");
   if (paused) {
-    ov.innerHTML = `<div class="sheet"><div class="sheet-head">PAUSED</div><button class="btn" data-act="resume" type="button">RESUME</button><button class="btn ghost" data-act="quit" type="button">QUIT GAME</button></div>`;
+    ov.innerHTML = `<div class="sheet"><div class="sheet-head">PAUSED</div><button class="btn" data-act="resume" type="button">RESUME</button><button class="btn alt" data-act="mute" type="button">${audio.muted ? "SOUND OFF" : "SOUND ON"}</button><button class="btn ghost" data-act="quit" type="button">QUIT GAME</button></div>`;
     builtPhase = "paused";
     return;
   }
@@ -396,6 +412,7 @@ function settleFinal() {
   ].map((r) => `<div class="statline"><span>${r[1]}</span><span>${r[0]}</span><span>${r[2]}</span></div>`).join("");
   $("finalPat").querySelector("span").textContent = line.pat;
   $("finalKenny").querySelector("span").textContent = line.kenny;
+  voice.speak(line);
   $("liftBtn").classList.toggle("hidden", !pendingTrophy);
   const over = mode === "season" && season && season.over;
   $("finalNext").textContent = pendingTrophy ? "SKIP TROPHY" : over ? "SEASON RECAP" : mode === "season" ? "SEASON HUB" : "REMATCH";
@@ -410,6 +427,7 @@ function openTrophy() {
   $("trophyCaption").textContent = pendingTrophy.caption;
   $("trophyPat").querySelector("span").textContent = pendingTrophy.pat;
   $("trophyKenny").querySelector("span").textContent = pendingTrophy.kenny;
+  voice.speak({ pat: pendingTrophy.pat, kenny: pendingTrophy.kenny });
   audio.play("hail");
   show("trophy");
 }
@@ -563,6 +581,7 @@ function wire() {
   });
   $("startGame").addEventListener("click", startMatch);
   $("pauseBtn").addEventListener("click", () => { paused = !paused; builtPhase = ""; });
+  $("muteGame").addEventListener("click", () => { unlock(); setMute(!audio.muted); });
   $("overlay").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-act]");
     if (!btn || !game) return;
@@ -576,7 +595,8 @@ function wire() {
     else if (act === "lock") game.lockKick();
     else if (act === "skip") game.advance();
     else if (act === "resume") { paused = false; builtPhase = ""; }
-    else if (act === "quit") { paused = false; game = null; show("title"); audio.startMusic("title"); }
+    else if (act === "mute") { setMute(!audio.muted); builtPhase = ""; }
+    else if (act === "quit") { paused = false; game = null; voice.stop?.(); show("title"); audio.startMusic("title"); }
   });
   $("liftBtn").addEventListener("click", openTrophy);
   $("finalNext").addEventListener("click", () => {
