@@ -39,6 +39,47 @@
 - **Blowout deficit:** Pat: "When you're down this much, you start thinking about your insurance deductible." / Kenny: "Oh my God, they killed your season! You bastards!"
 - **Dropped pass:** Pat: "Right in the hands! Right OUT of the hands! Hands of a guy holding a hot pizza." / Kenny: "Butterfingers! Did you butter them on purpose?"
 
+### Insurance joke bank (pepper everywhere)
+**Touchdowns**
+- Pat: "BOOM! Touchdown! That's comprehensive coverage — covered every blade of grass on the way in!"
+- Kenny: "Claim APPROVED, baby! No adjuster needed for that one."
+- Pat: "He hit that end zone like a guy who just found out his premium went DOWN."
+
+**Big bombs**
+- Pat: "That ball's got an umbrella policy — it's covered from sixty yards out!"
+- Kenny: "That's not a pass, that's an act of God. Totally not covered by the defense."
+- Pat: "The underwriter looked at that throw and said 'nope, too risky' — and he threw it anyway! BOOM!"
+
+**Sacks (mocking the player when you get sacked)**
+- Pat: "Collision coverage! And your quarterback just used ALL of it."
+- Kenny: "Dude, your O-line has zero liability coverage. They just let him walk in."
+- Pat: "That's a full-on total loss. The adjuster's gonna need dental records."
+
+**Interceptions (thrown by the player)**
+- Kenny: "Claim DENIED! Oh my God, you threw it right to the other guy!"
+- Pat: "That's what we call a preexisting condition — he's been throwing picks since peewee."
+- Kenny: "You just voided your warranty on that offense, dude."
+
+**Missed field goals**
+- Pat: "Wide right! There's your deductible, and it's three points."
+- Kenny: "Kicker's gonna need gap coverage, 'cause that thing went right through the gap — of NOTHING."
+- Pat: "Somebody file that under 'not covered by the policy.'"
+
+**3-and-outs**
+- Kenny: "Three and out? Your offense is like a co-pay — you pay every time and get nothing."
+- Pat: "Three plays and a punt. That drive had fewer riders than a bare-bones plan."
+- Kenny: "Even the underwriters are laughing at this drive."
+
+**Blowouts (player losing big)**
+- Pat: "Folks, at this point we're headed to binding arbitration. And you're losing that too."
+- Kenny: "Your season just got canceled for non-payment, dude."
+- Pat: "This scoreboard needs an umbrella policy — and so does your dignity."
+- Kenny: "Is this an act of God? No. It's just you being bad."
+
+**Player crushing it (celebration)**
+- Pat: "That team is fully insured — every rider, every add-on, BOOM!"
+- Kenny: "Shelter's got you covered, and you're covering the spread, sweet!"
+
 ## Audio list
 Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch, TD fanfare, crunch tackle, pick-six sting, Hail Claim choir, field goal, fumble, halftime, playoff & Insura-Bowl themes, announcer one-liners.
 
