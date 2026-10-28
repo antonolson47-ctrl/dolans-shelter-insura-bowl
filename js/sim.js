@@ -674,6 +674,7 @@ export class Game {
       dive: 0, juke: 0, stiff: 0, stun: 0, blocked: 0, blockTime: 0,
       assignment: null,
       primary: t.primary, secondary: t.secondary, pants: t.pants || t.secondary,
+      accent: t.accent || t.secondary, helmet: t.helmet || t.primary,
     };
     this.players.push(p);
     return p;
@@ -1698,6 +1699,7 @@ export class Game {
         controlled: p === this.userActor(),
         target: !!target && p === target && this.play && this.play.kind === "pass" && !this.play.thrown,
         primary: p.primary, secondary: p.secondary, pants: p.pants,
+        accent: p.accent, helmet: p.helmet,
       })),
       ball: {
         x: this.ball.x, y: this.ball.y, z: this.ball.z || 0, mode: this.ball.mode,
