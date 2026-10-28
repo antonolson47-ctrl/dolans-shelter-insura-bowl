@@ -78,7 +78,7 @@
 
 **Player crushing it (celebration)**
 - Pat: "That team is fully insured — every rider, every add-on, BOOM!"
-- Kenny: "Shelter's got you covered, and you're covering the spread, sweet!"
+- Kenny: "Umbrella's open and you're covering the yardage, sweet!"
 
 ## Trophies
 Art: art/insura-bowl-trophy.jpg, art/rivalry-trophies.jpg
