@@ -21,8 +21,31 @@ function T(partial) {
     pants: partial.pants || partial.secondary,
     ink: partial.ink || "#fff",
     helmet: partial.helmet || partial.primary,
+    jersey: partial.jersey || "other",
     ...partial,
   };
+}
+
+/** Jersey body color. Cardinal, crimson, and burgundy are red. Royal blue and navy are blue. */
+export function jerseyFamily(teamOrId) {
+  const team = typeof teamOrId === "string" ? TEAMS[teamOrId] : teamOrId;
+  const family = team && team.jersey;
+  return family === "red" || family === "blue" ? family : "other";
+}
+
+export function sameJerseyFamily(a, b) {
+  const left = jerseyFamily(a);
+  const right = jerseyFamily(b);
+  return left !== "other" && left === right;
+}
+
+/** First opponent whose jersey is not in the home team's color family. */
+export function safeOpponent(homeId, usedIds = []) {
+  const used = new Set(usedIds);
+  const pick = Object.values(TEAMS).find((team) => (
+    team.id !== homeId && !used.has(team.id) && !sameJerseyFamily(homeId, team.id)
+  ));
+  return pick ? pick.id : null;
 }
 
 export const TEAMS = {
@@ -37,6 +60,7 @@ export const TEAMS = {
     pants: "#f1be48",
     helmet: "#c8102e",
     accent: "#f1be48",
+    jersey: "red",
     rating: 84,
     helmetNo: 7,
     playable: true,
@@ -60,6 +84,7 @@ export const TEAMS = {
     pants: "#d5dbe6",
     helmet: "#0c3d9e",
     accent: "#d3122a",
+    jersey: "blue",
     rating: 86,
     helmetNo: 11,
     playable: true,
@@ -83,6 +108,7 @@ export const TEAMS = {
     pants: "#161616",
     helmet: "#9e1b32",
     accent: "#d5d8dc",
+    jersey: "red",
     rating: 83,
     helmetNo: 9,
     playable: true,
@@ -101,7 +127,7 @@ export const TEAMS = {
   }),
   dustdevils: T({
     id: "dustdevils", name: "Kansas Dustdevils", short: "DUSTDEVILS", city: "KANSAS", abbr: "DUS",
-    primary: "#0051a5", secondary: "#e31837", rating: 72, helmetNo: 4, mascot: "dust",
+    primary: "#0051a5", secondary: "#e31837", jersey: "blue", rating: 72, helmetNo: 4, mascot: "dust",
   }),
   toads: T({
     id: "toads", name: "Fort Worth Horned Toads", short: "HORNED TOADS", city: "FORT WORTH", abbr: "TOA",
@@ -109,7 +135,7 @@ export const TEAMS = {
   }),
   hillfolk: T({
     id: "hillfolk", name: "Hillfolk Mountaineers", short: "HILLFOLK", city: "HILL COUNTRY", abbr: "HIL",
-    primary: "#002855", secondary: "#eaaa00", rating: 75, helmetNo: 18, mascot: "hill",
+    primary: "#002855", secondary: "#eaaa00", jersey: "blue", rating: 75, helmetNo: 18, mascot: "hill",
   }),
   steerhorns: T({
     id: "steerhorns", name: "Texas Steerhorns", short: "STEERHORNS", city: "TEXAS", abbr: "TEX",
@@ -133,15 +159,15 @@ export const TEAMS = {
   }),
   federals: T({
     id: "federals", name: "Capital Federals", short: "FEDERALS", city: "CAPITAL", abbr: "CAP",
-    primary: "#5a1414", secondary: "#ffb612", rating: 78, helmetNo: 14, mascot: "dome",
+    primary: "#5a1414", secondary: "#ffb612", jersey: "red", rating: 78, helmetNo: 14, mascot: "dome",
   }),
   desertbirds: T({
     id: "desertbirds", name: "Arizona Desert Birds", short: "DESERT BIRDS", city: "ARIZONA", abbr: "ARI",
-    primary: "#97233f", secondary: "#ffb612", rating: 73, helmetNo: 3, mascot: "bird",
+    primary: "#97233f", secondary: "#ffb612", jersey: "red", rating: 73, helmetNo: 3, mascot: "bird",
   }),
   gusts: T({
     id: "gusts", name: "Chicago Gusts", short: "GUSTS", city: "CHICAGO", abbr: "CHI",
-    primary: "#0b162a", secondary: "#c83803", rating: 79, helmetNo: 34, mascot: "wind",
+    primary: "#0b162a", secondary: "#c83803", jersey: "blue", rating: 79, helmetNo: 34, mascot: "wind",
   }),
   packhorses: T({
     id: "packhorses", name: "Green Bay Packhorses", short: "PACKHORSES", city: "GREEN BAY", abbr: "GBP",
@@ -190,7 +216,7 @@ export const SCHEDULES = {
     { week: 2, opp: "beagles", label: "DEDUCTIBLE DRUM", rivalry: "drum" },
     { week: 3, opp: "federals", label: "WEEK 3" },
     { week: 4, opp: "desertbirds", label: "WEEK 4" },
-    { week: 5, opp: "gusts", label: "WEEK 5" },
+    { week: 5, opp: "cornkings", label: "WEEK 5" },
     { week: 6, opp: "packhorses", label: "WEEK 6" },
     { week: 7, opp: "gilbert", label: "WEEK 7" },
     { week: 8, opp: "cyclodes", label: "TORNADO–ANT BELL", rivalry: "bell" },
@@ -202,11 +228,11 @@ export const SCHEDULES = {
     { week: 2, opp: "baylord", label: "WEEK 2" },
     { week: 3, opp: "dustdevils", label: "WEEK 3" },
     { week: 4, opp: "beagles", label: "WEEK 4" },
-    { week: 5, opp: "federals", label: "WEEK 5" },
+    { week: 5, opp: "packhorses", label: "WEEK 5" },
     { week: 6, opp: "steerhorns", label: "WEEK 6" },
-    { week: 7, opp: "cyclodes", label: "WEEK 7" },
+    { week: 7, opp: "steerboys", label: "WEEK 7" },
     { week: 8, opp: "giants", label: "WEEK 8" },
-    semi("cyclodes", "PLAYOFF"),
+    semi("okiestate", "PLAYOFF"),
     bowl("giants"),
   ],
 };
@@ -280,5 +306,5 @@ export function teamById(id) {
 }
 
 export function exhibitionOpponents(userId) {
-  return Object.values(TEAMS).filter((t) => t.id !== userId);
+  return Object.values(TEAMS).filter((team) => team.id !== userId && !sameJerseyFamily(userId, team.id));
 }

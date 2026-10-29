@@ -1,14 +1,32 @@
 /** 8-game season, two playoff games, Insura-Bowl. Saved locally. */
 
-import { SCHEDULES, TEAMS, trophyFor } from "./teams.js";
+import { SCHEDULES, TEAMS, rivalryBetween, safeOpponent, sameJerseyFamily, trophyFor } from "./teams.js";
 
 const KEY = "insura-bowl-season-v1";
+
+function repairJerseyClashes(teamId, games, index) {
+  const used = new Set(games.slice(0, index).map((game) => game.opp));
+  return games.map((game, i) => {
+    if (i < index) return game;
+    if (game.opp && !sameJerseyFamily(teamId, game.opp)) {
+      used.add(game.opp);
+      return game;
+    }
+    const opp = safeOpponent(teamId, [...used]);
+    if (!opp) return game;
+    used.add(opp);
+    const rivalry = game.round === "insura" ? "umbrella" : rivalryBetween(teamId, opp);
+    return { ...game, opp, rivalry: rivalry || undefined };
+  });
+}
 
 export class Season {
   constructor(teamId, data) {
     this.teamId = teamId;
     this.team = TEAMS[teamId];
-    this.games = (data && data.games) || SCHEDULES[teamId].map((g) => ({ ...g }));
+    const source = (data && data.games) || SCHEDULES[teamId].map((g) => ({ ...g }));
+    this.games = repairJerseyClashes(teamId, source, data?.index || 0);
+    this.scheduleRepaired = JSON.stringify(this.games) !== JSON.stringify(source);
     this.index = data?.index || 0;
     this.regWins = data?.regWins || 0;
     this.regLosses = data?.regLosses || 0;
@@ -24,7 +42,9 @@ export class Season {
       if (!raw) return null;
       const data = JSON.parse(raw);
       if (!data?.teamId || !TEAMS[data.teamId]) return null;
-      return new Season(data.teamId, data);
+      const season = new Season(data.teamId, data);
+      if (season.scheduleRepaired) season.save();
+      return season;
     } catch {
       return null;
     }

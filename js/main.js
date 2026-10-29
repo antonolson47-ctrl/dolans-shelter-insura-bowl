@@ -6,7 +6,7 @@ import { Season } from "./season.js";
 import { Game } from "./sim.js";
 import {
   DEF_PLAYS, OFF_PLAYS, PLAYABLE, TEAMS, TROPHIES,
-  exhibitionOpponents, rivalryBetween, trophyFor,
+  exhibitionOpponents, rivalryBetween, sameJerseyFamily, trophyFor,
 } from "./teams.js";
 
 const audio = new AudioBus();
@@ -184,6 +184,16 @@ function paintReceive() {
 }
 
 function startMatch() {
+  if (userTeam && cpuTeam && sameJerseyFamily(userTeam, cpuTeam)) {
+    if (mode === "season" && season) {
+      renderHub();
+      show("hub");
+    } else {
+      renderOpponents();
+      show("opp");
+    }
+    return;
+  }
   unlock();
   commentator.resetGame();
   voice.stop?.();
