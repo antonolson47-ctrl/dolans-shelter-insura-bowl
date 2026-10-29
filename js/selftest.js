@@ -1,5 +1,5 @@
 import { Game, bigMoment } from "./sim.js";
-import { TEAMS, trophyFor } from "./teams.js";
+import { PLAYABLE, SCHEDULES, TEAMS, exhibitionOpponents, sameJerseyFamily, trophyFor } from "./teams.js";
 import { Commentator, BANKS } from "./commentary.js";
 
 function assert(cond, msg) {
@@ -21,6 +21,22 @@ assert(trophyFor("giants", "beagles", {}).id === "drum", "drum");
 assert(trophyFor("cyclodes", "giants", { round: "insura" }).id === "umbrella", "umbrella beats bell");
 assert(trophyFor("gilbert", "cornkings", { rivalry: "gcup" }).id === "gcup", "gcup");
 assert(trophyFor("cyclodes", "baylord", {}) === null, "no trophy");
+
+for (const home of PLAYABLE) {
+  const slate = SCHEDULES[home];
+  assert(slate.length === 10, `${home} schedule length`);
+  assert(slate.filter((game) => !game.round).length === 8, `${home} regular season`);
+  assert(slate.filter((game) => game.round === "semi").length === 1, `${home} playoff`);
+  assert(slate.filter((game) => game.round === "insura").length === 1, `${home} bowl`);
+  for (const game of slate) {
+    assert(TEAMS[game.opp], `${home} missing opponent ${game.opp}`);
+    assert(!sameJerseyFamily(home, game.opp), `${home} vs ${game.opp} share a jersey color`);
+  }
+  for (const opp of exhibitionOpponents(home)) {
+    assert(!sameJerseyFamily(home, opp.id), `exhibition ${home} vs ${opp.id}`);
+  }
+  assert(!exhibitionOpponents(home).some((opp) => opp.id === home), `${home} can play itself`);
+}
 
 const com = new Commentator();
 const seen = new Set();
