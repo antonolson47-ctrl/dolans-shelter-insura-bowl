@@ -15,7 +15,7 @@ A Tecmo Bowl–style arcade football game for the phone browser. Pick the Iowa S
    - **A** throws to the highlighted receiver. After the catch, or on a run, **A** dives and stiff-arms.
    - **B** cycles receivers before the throw, then jukes. On defense, **B** switches to the nearest tackler and **A** is a dive tackle.
 7. Field goals and extra points are a timing bar. Press **A** when the needle is in the green.
-8. Pat Boom and Kenny South call the game on the ticker under the scorebug (it stays visible during play call) and out loud when the phone allows speech. They mock bad throws, missed kicks, three-and-outs, and blowouts. Lines rotate and won't repeat until most of that bucket has been used. Mute covers music, hits, and the voices.
+8. Pat Boom and Kenny South call the game on the ticker under the scorebug (it stays visible during play call) and out loud when the phone allows speech. They mock bad throws, missed kicks, three-and-outs, and blowouts. Lines rotate and won't repeat until most of that bucket has been used. Mute covers music, hits, and the voices. The band changes every quarter. Playoff games get a tighter wildcard set, and the Insura-Bowl has its own anthem, including the trophy lift.
 9. Win a rivalry (Claim Clipboard Cup, Deductible Drum, Tornado–Ant Bell, G-Cup) or the Insura-Bowl and you get a trophy lift.
 
 Desktop: arrow keys or WASD to move, **Z** is A, **X** is B, **Enter** hikes, **1–6** pick a play, **P** pauses.
