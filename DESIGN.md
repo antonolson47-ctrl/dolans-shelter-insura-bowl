@@ -107,7 +107,7 @@ Winning a rivalry game or the final triggers a trophy-lift cutscene plus an anno
 - Pat: "Run the dang ball! You're not getting paid by the incompletion!"
 
 ## Audio list
-Title theme, team-select loop, game music, crowd loop, whistle, snap/hike, catch, TD fanfare, crunch tackle, pick-six sting, Hail Claim choir, field goal, fumble, halftime, playoff & Insura-Bowl themes, announcer one-liners.
+Procedural only (Web Audio, no sample files). Title loop on the menus. In a game the bed swaps with the quarter: Q1 Opening Kick, Q2 Sideline Heat, Q3 Second Sun, Q4 Last Claim (overtime stays on Q4). A brass fanfare marks the opening kickoff. Halftime swells into Q3. Non-Bowl playoff games use a darker, faster wildcard set (semi Q1–Q4) instead of the regular beds. The Insura-Bowl keeps one championship bed, Umbrella Anthem, for every quarter and for the championship trophy lift. Chip drums, hats, and the crowd loop sit under the brass, strings, and timpani. Gameplay stingers stay: whistle, snap/hike, catch, TD, crunch, pick, Hail Claim, field goal, fumble. Mute, the first-tap unlock, and the announcer duck still cover the bed. Announcer one-liners.
 
 ## Storyboard beats (see art/storyboard-moments.jpg)
 1. Kickoff  2. Bomb TD  3. Crunch tackle  4. Pick-six  

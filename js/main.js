@@ -1,4 +1,4 @@
-import { AudioBus } from "./audio.js";
+import { AudioBus, bedName } from "./audio.js";
 import { Commentator, bucketForCue } from "./commentary.js";
 import { AnnouncerVoice } from "./speech.js";
 import { FieldView } from "./render.js";
@@ -34,6 +34,8 @@ let builtPhase = "";
 let finalHandled = false;
 let pendingTrophy = null;
 let afterTrophy = "hub";
+let matchRound = null;
+let halfSting = false;
 
 const BIG = new Set(["BOMB", "CRUNCH", "TOUCHDOWN", "PICK-SIX", "HAIL CLAIM", "SAFETY", "FIELD GOAL", "TWO POINTS", "OVERTIME"]);
 
@@ -204,8 +206,10 @@ function startMatch() {
   builtPhase = "";
   game = new Game({ player: userTeam, cpu: cpuTeam, receive });
   game.start(receive);
-  const round = season && season.current && season.current.round;
-  audio.startMusic(round ? "playoff" : "game");
+  matchRound = (season && season.current && season.current.round) || null;
+  halfSting = false;
+  audio.startMusic(bedName(matchRound, 1));
+  audio.play("fanfare");
   show("game");
   if (!field) field = new FieldView($("field"));
 }
@@ -386,6 +390,7 @@ function frame(now) {
       }
       game.update(dt, input);
       while (game.sfxQ.length) audio.play(game.sfxQ.shift());
+      syncBed();
     }
     const snap = game.snapshot();
     if (field) field.draw(snap);
@@ -401,6 +406,16 @@ function frame(now) {
     if (snap.phase === "final") settleFinal();
   }
   requestAnimationFrame(frame);
+}
+
+function syncBed() {
+  if (!game) return;
+  const name = bedName(matchRound, game.ot ? 4 : game.quarter);
+  audio.startMusic(name);
+  if (!halfSting && game.phase === "halftime") {
+    halfSting = true;
+    audio.play("halfswell");
+  }
 }
 
 function settleFinal() {
@@ -456,6 +471,7 @@ function openTrophy() {
   $("trophyPat").querySelector("span").textContent = pendingTrophy.pat;
   $("trophyKenny").querySelector("span").textContent = pendingTrophy.kenny;
   voice.speak({ pat: pendingTrophy.pat, kenny: pendingTrophy.kenny });
+  if (pendingTrophy.id === "umbrella") audio.startMusic("bowl");
   audio.play("hail");
   show("trophy");
 }
@@ -662,4 +678,9 @@ wire();
 audio.startMusic("title");
 requestAnimationFrame(frame);
 
-window.__IB = { Game, TEAMS, startMatch, get game() { return game; } };
+window.__IB = {
+  Game, TEAMS, startMatch, bedName,
+  get game() { return game; },
+  get audio() { return audio; },
+  setMatchRound(round) { matchRound = round || null; halfSting = false; },
+};

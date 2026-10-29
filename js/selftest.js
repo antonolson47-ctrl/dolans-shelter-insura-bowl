@@ -1,3 +1,4 @@
+import { bedName, noteLen, validateSongs } from "./audio.js";
 import { Game, bigMoment } from "./sim.js";
 import { PLAYABLE, SCHEDULES, TEAMS, exhibitionOpponents, sameJerseyFamily, trophyFor } from "./teams.js";
 import { Commentator, BANKS } from "./commentary.js";
@@ -21,6 +22,23 @@ assert(trophyFor("giants", "beagles", {}).id === "drum", "drum");
 assert(trophyFor("cyclodes", "giants", { round: "insura" }).id === "umbrella", "umbrella beats bell");
 assert(trophyFor("gilbert", "cornkings", { rivalry: "gcup" }).id === "gcup", "gcup");
 assert(trophyFor("cyclodes", "baylord", {}) === null, "no trophy");
+
+assert(noteLen([70, 70, 70, 0, 74], 0) === 3, "brass sustain");
+assert(noteLen([70, 70, 70, 0, 74], 1) === 0, "brass tie");
+assert(noteLen([70, 70, 70, 0, 74], 3) === 0, "brass rest");
+assert(noteLen([70, 70, 70, 0, 74], 4) === 1, "brass attack");
+const songErrors = validateSongs();
+assert(songErrors.length === 0, songErrors.join("; "));
+for (const q of [1, 2, 3, 4]) {
+  assert(bedName(null, q) === `q${q}`, `regular Q${q}`);
+  assert(bedName("semi", q) === `semi${q}`, `playoff Q${q}`);
+  assert(bedName("insura", q) === "bowl", `bowl Q${q}`);
+}
+assert(bedName(null, 5) === "q4", "overtime keeps Q4");
+assert(bedName("semi", 5) === "semi4", "playoff overtime keeps the Q4 wildcard");
+assert(bedName("insura", 5) === "bowl", "bowl overtime stays the anthem");
+assert(bedName("insura", 1) !== bedName("semi", 1), "bowl is not the playoff bed");
+assert(bedName(null, 1) !== bedName(null, 3), "quarters do not share a bed");
 
 for (const home of PLAYABLE) {
   const slate = SCHEDULES[home];
