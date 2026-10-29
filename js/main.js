@@ -300,8 +300,12 @@ function buildOverlay(snap) {
       : DEF_PLAYS.map((p) => p.id);
     if (!legal.includes(selectedPlay)) selectedPlay = legal[0];
     let body = "";
-    if (snap.twoPt) {
+    if (snap.twoPt && snap.offense === "player") {
       body = `<div class="sheet-head">2-PT TRY</div>${playGrid(snap)}<button class="btn" data-act="hike" type="button">HIKE</button>`;
+    } else if (snap.twoPt) {
+      body = `<div class="sheet-head"><span>THEIR 2-PT TRY</span><button class="btn ghost" data-act="timeout" type="button">TIMEOUT ${snap.timeouts.player}</button></div>
+        <div class="play-grid">${playButtons(DEF_PLAYS, selectedPlay)}</div>
+        <button class="btn" data-act="hike" type="button">HIKE</button>`;
     } else if (cpuKick) {
       body = `<div class="sheet-head">${snap.cpuPlan === "fg" ? "FIELD GOAL TEAM" : "PUNT TEAM"}</div><button class="btn" data-act="hike" type="button">${snap.cpuPlan === "fg" ? "BLOCK WATCH" : "RETURN"}</button>`;
     } else if (snap.offense === "player") {

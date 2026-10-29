@@ -72,6 +72,10 @@ for (const receive of [true, false]) {
     n += 1;
   }
   assert(g.play && g.play.kind === "kickoff", "kickoff did not start");
+  const returners = g.players.filter((p) => p.team === g.play.returnTeam).length;
+  const coverage = g.players.length - returners;
+  assert(returners >= 6 && coverage >= 6, `kickoff personnel return=${returners} coverage=${coverage} receive=${receive}`);
+  assert(returners >= coverage, "return team is outnumbered");
   const flips = new Set();
   let prev = screenBall(g);
   let maxJump = 0;
@@ -88,6 +92,34 @@ for (const receive of [true, false]) {
   assert(flips.size === 1, `kickoff view flipped mid-return (receive=${receive})`);
   assert(maxJump < 20, `kickoff camera jumped ${maxJump.toFixed(1)} yards`);
   assert(sawCatch || g.reasons.touchback, "kickoff ended without a catch or touchback");
+}
+
+{
+  let cpuReturnTds = 0;
+  const tries = 36;
+  for (let i = 0; i < tries; i++) {
+    const g = new Game({
+      player: TEAMS.cyclodes,
+      cpu: TEAMS.giants,
+      bot: false,
+      seed: 200 + i,
+      receive: false,
+    });
+    g.start(false);
+    let n = 0;
+    while (g.phase !== "live" && n < 40) {
+      if (g.phase === "celebrate" || g.phase === "quarter" || g.phase === "halftime") g.advance();
+      else g.update(1 / 50, stickRight());
+      n += 1;
+    }
+    let steps = 0;
+    while (g.phase === "live" && g.play && g.play.kind === "kickoff" && steps < 700) {
+      g.update(1 / 40, stickRight());
+      steps += 1;
+    }
+    if (g.scores.cpu >= 6) cpuReturnTds += 1;
+  }
+  assert(cpuReturnTds <= 1, `CPU kick-return TDs too common: ${cpuReturnTds}/${tries}`);
 }
 
 for (const receive of [true, false]) {
