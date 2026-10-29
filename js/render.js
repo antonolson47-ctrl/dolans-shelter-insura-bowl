@@ -45,51 +45,63 @@ const FONT = {
   "-": ["...", "...", "###", "...", "..."],
 };
 
-/** 16×17 side-view athletes. O outline, H helmet, S stripe, K skin, F mask, J jersey, A sleeve, P pants, W shoe. */
-const BODY = [
-  "....OOOOOO......",
-  "...OHHHHHHHO....",
-  "...OHSSSSSHO....",
-  "...OHHKKKKHHO...",
-  "...OHHKFFFO.....",
-  "....OHHHHO......",
-  "...OJJJJJJJO....",
-  "...OJJJJJJJO....",
-  "...OJJJJJJJO....",
-  "....OPPPPPO.....",
-  "....OPPPPPO.....",
+/** Side-view Tecmo linemen, facing right. Wider than tall, crouched three-point stance.
+ *  O outline, H helmet, S stripe, K skin, F mask, J jersey, A sleeve, P pants, W shoe.
+ */
+const STANCE = [
+  "............OHHHHO....",
+  "..........OHSSSSHO....",
+  ".........OHHKKKKHHO...",
+  "....OOOOJJJJJJJOHHHHO.",
+  "....OJJJJJJJJJJJJOFFO.",
+  "....OJJJJJJJJJJJJJO.K.",
+  "....AKJJJJJJJJJJJJOKK.",
+  "....AKKJJJJJJJJJJ.AKK.",
+  "....A..PPPP..PPPPP.KK.",
+  ".......PPPP..PPPPP.K..",
+  "......OWWWO..OWWWO....",
+  ".......WW......WW.....",
 ];
-const ARMS = [
-  ["..A.OJJJJJJO.A..", ".AA.OJJJJJJO.AA."],
-  ["...AOJJJJJJJOA..", "..A.OJJJJJJO.A.."],
-  [".A..OJJJJJJO..A.", "..A.OJJJJJJO.A.."],
-  ["..A..JJJJJJ..A..", "..AA.JJJJJ.AA..."],
+const PAD = STANCE.slice(0, 8);
+const RUN = [
+  STANCE,
+  PAD.concat([
+    "..A..PPPP....PPPPP.KK.",
+    ".....PPPP....PPPPP.K..",
+    "....OWWWO....OWWWO....",
+    ".....WW........WW.....",
+  ]),
+  PAD.concat([
+    "...AKKPPPP..PPPPPKK...",
+    "....A.PPPP..PPPPP.K...",
+    ".....OWWWO..OWWWO.....",
+    "......WW......WW......",
+  ]),
+  PAD.concat([
+    ".PPPP....PPPPP....AKK.",
+    "..PPPP....PPPPP....K..",
+    "..OWWWO....OWWWO......",
+    "...WW......WW.........",
+  ]),
 ];
-const LEGS = [
-  ["...PP....PP.....", "..PP......PP....", ".PP........PP...", "WW..........WW..", "W............W.."],
-  ["....PP..PP......", "....PP..PP......", "....PP..PP......", "....WW..WW......", "................"],
-  [".....PP....PP...", "....PP......PP..", "...PP........PP.", "..WW..........WW", "..W............W"],
-  [".....PPPP.......", ".....PPPP.......", ".....PPPP.......", ".....WWWW.......", "................"],
-];
-const RUN = LEGS.map((legs, i) => BODY.concat(ARMS[i], legs));
-
 const DIVE = [
-  "WW..............",
-  ".PPPPP.JJJJHHHH.",
-  "PP...P.JAJJHHHHH",
-  ".PPPPP.JJJJHHFFF",
-  "WW...P.JJJJHHHHH",
-  "......PPPPP.HHH.",
+  "...WWWWW..............",
+  "..PPPPPPPPJJJJOHHHHHO.",
+  ".PPPPPPPPPPJKKFFSSSHO.",
+  "..PPPPPPPPJJJJJJJJJHHO",
+  "...WWWWWWWPPPPP.KKKHO.",
+  "....WWWW..PPPP........",
 ];
 
-for (const frame of RUN) {
-  for (const row of frame) {
-    if (row.length !== 16) throw new Error(`sprite row width ${row.length}: ${row}`);
+function assertSprite(name, rows) {
+  const w = rows[0].length;
+  if (!(w > rows.length)) throw new Error(`${name} should be wider than tall`);
+  for (const row of rows) {
+    if (row.length !== w) throw new Error(`${name} row width ${row.length}: ${row}`);
   }
 }
-for (const row of DIVE) {
-  if (row.length !== 16) throw new Error(`dive row width ${row.length}: ${row}`);
-}
+RUN.forEach((frame, i) => assertSprite(`run${i}`, frame));
+assertSprite("dive", DIVE);
 
 function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
@@ -128,8 +140,8 @@ function stampNumber(ctx, dx, dy, num, scale, color) {
   const gh = 5;
   const gap = 1;
   const total = digits.length * gw + (digits.length - 1) * gap;
-  const originX = Math.floor((16 - total) / 2);
-  const originY = 6;
+  const originX = Math.max(1, 8 - Math.floor(total / 2));
+  const originY = 4;
   digits.forEach((d, i) => {
     const g = FONT[d];
     if (!g) return;
@@ -342,10 +354,10 @@ export class FieldView {
       facing: dir,
       hasBall: i === 2,
       primary: off.color,
-      secondary: "#f4f4f4",
-      pants: "#24180f",
-      accent: off.color,
-      helmet: off.color,
+      secondary: off.secondary || "#f4f4f4",
+      pants: off.pants || off.secondary || "#f4f4f4",
+      accent: off.accent || off.secondary || off.color,
+      helmet: off.helmet || off.color,
     })).concat(ys.map((y) => ({
       x: snap.los + dir * 1.7,
       y,
@@ -354,10 +366,10 @@ export class FieldView {
       facing: -dir,
       hasBall: false,
       primary: def.color,
-      secondary: "#111",
-      pants: "#24180f",
-      accent: "#111",
-      helmet: def.color,
+      secondary: def.secondary || "#111",
+      pants: def.pants || def.secondary || "#111",
+      accent: def.accent || def.secondary || "#111",
+      helmet: def.helmet || def.color,
     })));
   }
 
@@ -365,13 +377,14 @@ export class FieldView {
     const [sx0, sy0] = project(p.x, p.y);
     const sx = Math.round(sx0);
     const sy = Math.round(sy0);
+    const shadowW = 22;
     ctx.fillStyle = "rgba(0,0,0,.45)";
-    ctx.fillRect(sx - 8, sy - 2, 16, 3);
+    ctx.fillRect(sx - 11, sy - 2, shadowW, 3);
     if (p.controlled) {
       ctx.fillStyle = "#ffe14a";
-      ctx.fillRect(sx - 10, sy - 3, 20, 2);
-      ctx.fillRect(sx - 10, sy, 3, 2);
-      ctx.fillRect(sx + 7, sy, 3, 2);
+      ctx.fillRect(sx - 12, sy - 3, 24, 2);
+      ctx.fillRect(sx - 12, sy, 3, 2);
+      ctx.fillRect(sx + 9, sy, 3, 2);
     }
     if (p.target) {
       ctx.fillStyle = "#ffe14a";
@@ -386,27 +399,26 @@ export class FieldView {
       H: p.helmet || p.primary,
       S: p.secondary || "#fff",
       K: "#e2b48a",
-      F: "#dfe5ef",
+      F: "#1a1c22",
       J: p.primary,
       A: p.accent || p.secondary || p.primary,
       P: p.pants || "#222",
       W: "#f4f4f4",
     };
-    if (p.dive) {
-      blit(ctx, sx - 16, sy - 16, DIVE, pal, PX, mirror);
-      if (p.hasBall) this.pig(ctx, sx + (mirror ? -10 : 8), sy - 8, 0);
-      return;
-    }
-    const frame = animate ? Math.floor(this.t * 8 + p.x * 1.7) % RUN.length : 0;
-    const rows = RUN[frame];
+    const rows = p.dive ? DIVE : RUN[animate ? 1 + (Math.floor(this.t * 8 + p.x * 1.7) % (RUN.length - 1)) : 0];
+    const sw = rows[0].length;
     const h = rows.length * PX;
+    const left = sx - Math.floor(sw * PX / 2);
     const top = sy - h + 2;
-    blit(ctx, sx - 16, top, rows, pal, PX, mirror);
-    if (p.num) {
+    blit(ctx, left, top, rows, pal, PX, mirror);
+    if (p.num && !p.dive) {
       const numColor = lum(p.primary) > 160 ? "#161616" : "#ffffff";
-      stampNumber(ctx, sx - 16, top, p.num, PX, numColor);
+      stampNumber(ctx, left, top, p.num, PX, numColor);
     }
-    if (p.hasBall) this.pig(ctx, sx + (mirror ? -14 : 12), sy - 16, this.t * 8);
+    if (p.hasBall) {
+      const front = Math.round(sw * PX * 0.36);
+      this.pig(ctx, sx + (mirror ? -front : front), sy - Math.round(h * 0.42), p.dive ? 0 : this.t * 8);
+    }
   }
 
   ball(ctx, project, ball) {

@@ -1778,8 +1778,16 @@ export class Game {
       scores: { ...this.scores },
       timeouts: { ...this.timeouts },
       offense: this.offense,
-      player: { abbr: this.player.abbr, color: this.player.primary, name: this.player.short },
-      cpu: { abbr: this.cpu.abbr, color: this.cpu.primary, name: this.cpu.short },
+      player: {
+        abbr: this.player.abbr, color: this.player.primary, name: this.player.short,
+        secondary: this.player.secondary, pants: this.player.pants,
+        helmet: this.player.helmet, accent: this.player.accent,
+      },
+      cpu: {
+        abbr: this.cpu.abbr, color: this.cpu.primary, name: this.cpu.short,
+        secondary: this.cpu.secondary, pants: this.cpu.pants,
+        helmet: this.cpu.helmet, accent: this.cpu.accent,
+      },
       playClock: Math.max(0, Math.ceil(this.playClock || 0)),
       fg: this.phase === "fg" ? { ...this.fg } : null,
       twoPt: this.twoPt,
