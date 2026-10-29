@@ -454,7 +454,7 @@ export class Game {
     this.phase = "playcall";
     this.playClock = 10;
     this.cpuPlan = this.offense === "cpu" ? this.cpuOffPick() : null;
-    this.note = "GOING FOR TWO";
+    this.note = this.offense === "player" ? "GOING FOR TWO" : "STOP THE 2-PT TRY";
     this.noteT = 2;
   }
 
@@ -791,17 +791,25 @@ export class Game {
   }
 
   spawnCoverage(team, fromX, dir) {
-    for (let i = 0; i < 5; i++) {
-      this.make(team, "GUN", fromX + dir * (2 + i * 0.4), 3 + i * 5.6, 30 + i, "GUN");
-    }
+    const lanes = [3, 8, 12, 17, 22, 27];
+    lanes.forEach((y, i) => {
+      this.make(team, "GUN", fromX + dir * (1.2 + i * 0.35), y, 30 + i, "GUN");
+    });
   }
 
   spawnReturn(team, landX) {
-    const back = team === "player" ? 8 : -8;
+    const dir = this.attackDir(team);
     const g = this.guy(team, "RB");
     this.make(team, "RET", landX, 15, g.num, g.name);
-    this.make(team, "WR", landX + back, 8, 15, "UP");
-    this.make(team, "WR", landX + back, 22, 16, "DOWN");
+    [4, 8, 12, 18, 22, 26].forEach((y, i) => {
+      this.make(team, "WR", landX + dir * 7, y, 20 + i, "BLK");
+    });
+  }
+
+  cpuKickReturn(carrier) {
+    return !!(carrier && carrier.team === "cpu" && carrier.role === "RET"
+      && this.play && (this.play.kind === "kickoff" || this.play.kind === "punt")
+      && this.play.caught);
   }
 
   giveBall(p) {
@@ -934,8 +942,15 @@ export class Game {
           } else if (p.team === carrier.team) {
             const lane = p.y <= carrier.y ? Math.max(3, carrier.y - 5) : Math.min(27, carrier.y + 5);
             this.desire(p, carrier.x + this.attackDir(p.team) * 6, lane, p.speed);
+            if (carrier.team === "player") {
+              const tgt = this.nearestEnemy(p);
+              if (tgt && this.dist(p, tgt) < 1.5) tgt.blocked = 0.16;
+            }
           } else {
             this.chase(p, carrier);
+            if (this.cpuKickReturn(carrier) && this.dist(p, carrier) < 2.4 && p.dive <= 0 && this.rand() < 0.35) {
+              this.startDive(p);
+            }
           }
           continue;
         }
@@ -986,9 +1001,11 @@ export class Game {
     if (threat && this.dist(threat, p) < 6.5) ty = threat.y > p.y ? p.y - 3.2 : p.y + 3.2;
     const ax = p.team === "player" ? 8 : -8;
     let sp = p.speed;
-    if (this.nearestEnemyDist(p) > 3.8) sp *= 1.26;
+    const housed = this.cpuKickReturn(p);
+    if (housed) sp *= 0.7;
+    else if (this.nearestEnemyDist(p) > 3.8) sp *= 1.26;
     this.desire(p, p.x + ax, clamp(ty, 2, 28), sp);
-    if (threat && this.dist(threat, p) < 2.4 && p.juke <= 0 && this.rand() < 0.08) this.startJuke(p);
+    if (!housed && threat && this.dist(threat, p) < 2.4 && p.juke <= 0 && this.rand() < 0.08) this.startJuke(p);
   }
 
   idleCarrier(p) {
@@ -1052,11 +1069,12 @@ export class Game {
   }
 
   chase(p, target) {
-    const lead = target.team === "player" ? 0.35 : 0.35;
+    const lead = 0.2;
     const tx = target.x + (target.vx || 0) * lead;
-    const ty = target.y + (target.vy || 0) * 0.15;
+    const ty = target.y + (target.vy || 0) * 0.1;
     let sp = p.speed;
     if (p.role === "DB") sp *= 1.02;
+    if (this.cpuKickReturn(target)) sp *= 1.22;
     this.desire(p, tx, ty, sp);
   }
 
@@ -1406,10 +1424,11 @@ export class Game {
       if (d.team === carrier.team || d.stun > 0) continue;
       if (d.blocked > 0 && d.dive <= 0) continue;
       const dist = this.dist(d, carrier);
-      const reach = d.dive > 0 ? 1.8 : 0.96;
+      const coveringCpuReturn = this.cpuKickReturn(carrier);
+      const reach = d.dive > 0 ? (coveringCpuReturn ? 2.15 : 1.8) : (coveringCpuReturn ? 1.35 : 0.96);
       if (dist > reach) continue;
-      if (carrier.juke > 0 && d.dive <= 0) { d.stun = 0.28; continue; }
-      if (carrier.stiff > 0 && d.dive <= 0) { d.stun = 0.5; carrier.stiff = 0; continue; }
+      if (carrier.juke > 0 && d.dive <= 0 && !coveringCpuReturn) { d.stun = 0.28; continue; }
+      if (carrier.stiff > 0 && d.dive <= 0 && !coveringCpuReturn) { d.stun = 0.5; carrier.stiff = 0; continue; }
       this.tackle(d, carrier);
       return this.phase === "live";
     }
